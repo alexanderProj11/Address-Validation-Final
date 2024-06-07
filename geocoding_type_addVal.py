@@ -30,7 +30,7 @@ def geocode_address(latitude, longitude):
 
 def process_csv(reader, total_rows):
     with open(OUTPUT_CSV_PATH, mode='w', newline='', encoding='utf-8') as outfile:
-        fieldnames = ['confirmationNo', 'latitude', 'longitude', 'formattedAddress', 'postalCode']
+        fieldnames = ['confirmationNo', 'Latitude', 'Longitude', 'formattedAddress', 'postalCode', 'correctFSA']
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
 
