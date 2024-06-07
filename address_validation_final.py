@@ -8,11 +8,11 @@ import config
 # Constants
 API_KEY = config.API_KEY
 API_URL = 'https://addressvalidation.googleapis.com/v1:validateAddress?key=' + API_KEY
-INPUT_CSV_PATH = '/home/salaalex382/CSV Files/Addr_Train_MK3.csv'
-OUTPUT_CSV_PATH = '/home/salaalex382/CSV Files/addresses_output_mk3.csv'
+INPUT_CSV_PATH = 'fsa_manitoba_errors.csv'
+OUTPUT_CSV_PATH = 'CORRECTED_addresses_fsa_manitoba.csv'
 
 def parse_address(row):
-    return f"{row['Address']}, {row['City']}, {row['Province']}, {row['Postal Code']}, {row['Country']}"
+    return row['formattedAddress']
 
 def validate_address(address):
     headers = {'Content-Type': 'application/json'}
@@ -30,7 +30,7 @@ def format_verdict(verdict_info):
 
 def process_csv(reader, total_rows):
     with open(OUTPUT_CSV_PATH, mode='w', newline='', encoding='utf-8') as outfile:
-        fieldnames = ['confirmationNo', 'inputAddress', 'verdict', 'latitude', 'longitude', 'formattedAddress', 'postalCode', 'errorMessage', 'supportDescription', 'riskType', 'submittedDate', 'startDate', 'endDate', 'owner', 'ownerPhoneNumber', 'contractor', 'siteContact', 'contactPhoneNumber', 'compName', 'compPhoneNumber']
+        fieldnames = ['confirmationNo', 'inputAddress', 'verdict', 'latitude', 'longitude', 'formattedAddress', 'postalCode', 'correctFSA']
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -56,19 +56,7 @@ def process_csv(reader, total_rows):
                 'longitude': location.get('longitude', ''),
                 'formattedAddress': result.get('address', {}).get('formattedAddress', ''),
                 'postalCode': result.get('address', {}).get('postalAddress', {}).get('postalCode', ''),
-                'errorMessage': validation_result.get('error', {}).get('message', 'No error'),
-                'supportDescription': row['supportDescription'],
-                'riskType': row['riskType'],
-                'submittedDate': row['submittedDate'],
-                'startDate': row['startDate'],
-                'endDate': row['endDate'],
-                'owner': row['owner'],
-                'ownerPhoneNumber': row['ownerPhoneNumber'],
-                'contractor': row['contractor'],
-                'siteContact': row['siteContact'],
-                'contactPhoneNumber': row['contactPhoneNumber'],
-                'compName': row['compName'],
-                'compPhoneNumber': row['compPhoneNumber']
+                'correctFSA': row['New FSA']
             })
 
 def process_addresses():
